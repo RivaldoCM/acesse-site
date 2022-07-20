@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { Container } from "./styles"
+import { api } from "../../services/api";
 
 import { BiUser } from "react-icons/bi"
 import { RiLockPasswordLine } from "react-icons/ri"
 import { MdOutlineLogin } from "react-icons/md"
 
-export default function Login(){
-    const [ user, setUser ] = useState(null);
-    const [ password, setPassword ] = useState(null)
+export function Login(){
+    const [ username, setUser ] = useState(null);
+    const [ password, setPassword ] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("submit", {user, password});
+        api.post("/login", { username, password }  ).then((response) => {
+            localStorage.setItem("token", response.data.token)
+            window.location.href = "/home"
+            }
+        );
     }
 
     return(
@@ -27,7 +32,7 @@ export default function Login(){
                                 <BiUser fontSize="1.5rem"/>
                             </div>
                             <input 
-                                type="email" 
+                                type="text" 
                                 placeholder="Email: "
                                 required
                                 onChange={(e) => setUser(e.target.value)}
